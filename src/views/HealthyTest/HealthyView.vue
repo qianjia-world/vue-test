@@ -16,7 +16,6 @@
             </div>
         </nav>
         <header class="header">
-            <div class="nav"></div>
             <div class="container">
                 <div class="header__menu-toggle" :class="{'close': isPhoneHeaderStatus == 2}">
                     <!-- v-if -->
@@ -48,16 +47,71 @@
         <div class="menu" :class="{
             'open': isMenuToggle
         }">menu</div>
-        <div class="article" :class="{
-            'open':!isMenuToggle
-        }">article</div>
+        <div class="article">
+            <div class="article__item" :class="{
+                'close':isMenuToggle
+            }">
+                <div class="article__carousel">
+                    <swiper
+                        :effect="'cards'"
+                        :modules="modules"
+                        class="mySwiper"
+                        :navigation="true"
+                    >
+                        <swiper-slide><img class="article__carousel__item" src="https://picsum.photos/339/184" alt="" srcset=""></swiper-slide>
+                        <swiper-slide><img class="article__carousel__item" src="https://picsum.photos/339/184" alt="" srcset=""></swiper-slide>
+                        <swiper-slide><img class="article__carousel__item" src="https://picsum.photos/339/184" alt="" srcset=""></swiper-slide>
+                    </swiper>
+                </div>
+                <div class="article__content">
+                    <div class="article__content__item">
+                        <div class="article__info">
+                            <a class="article__video" href="">
+                                <img src="../../assets/healthy-test/article-video.svg" alt="">影音
+                            </a>
+                            <span class="article__tag">#不分癌</span>
+                            <span class="article__tag">#常見治療問題</span>
+                            <span class="article__tag">#常見問題</span>
+                        </div>
+                        <div class="article__title">疫情期間，癌症化療病人尿不出來又怕掛急診染疫，怎麼辦？</div>
+                        <a :href="url" class="article__btn">立即閱讀</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import axios from 'axios';
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import 'swiper/css/effect-cards';
+
+// import required modules
+import { EffectCards } from 'swiper/modules';
+import { Pagination, Navigation } from 'swiper/modules';
 export default {
+    components: {
+      Swiper,
+      SwiperSlide,
+    },
+    setup() {
+      return {
+        modules: [Pagination,EffectCards, Navigation],
+      };
+    },
     data() {
         return {
+            data:{
+                url:'',
+                description:''
+            },
             isMenuToggle: false,
             isPhoneHeaderStatus: 1,//1,2
             isPhone:true,
@@ -75,11 +129,9 @@ export default {
             let vm = this
             return function(){
                 if (prevY > window.scrollY){
-                    console.log('上怡');
                     vm.isPhoneHeaderStatus = 1
 
                 } else {
-                    console.log('下滑');
                     vm.isPhoneHeaderStatus = 2
                     vm.isLineToggle = true
 
@@ -102,7 +154,19 @@ export default {
             
             // 如果用户代理字符串中包含移动设备关键词，则返回 true，否则返回 false
             return mobileKeywords.test(userAgent);
+        },
+        fetchData(){
+            axios.get(`https://newsapi.org/v2/top-headlines/sources?apiKey=42bd4348393e4b7a8ab3cc7574c1a2b3&country=ca`)
+            .then( (response) => {
+                console.log(response)
+                this.data.url = response.data.sources[0].url
+                this.data.description = response.data.sources[0].description
+            })
+            .catch( (error) => console.log(error))
         }
+    },
+    created(){
+        this.fetchData()
     },
     mounted(){
         this.isPhone = this.isMobileDevice()
@@ -179,6 +243,7 @@ export default {
     top: 0;
     border-bottom: 1px solid #DDDDDD;
     background-color: white;
+    z-index: 10;
 }
 .container{
     min-height: 60px;
@@ -356,21 +421,150 @@ export default {
     font-size: 64px;
     color: black;
 }
-
 .article{
-    display: none;
     background-color: #F7F7F7;
+
+}
+.article__item{
+    max-width: 1246px;
+    margin: auto;
     width: 100%;
-    min-height: 100vh;
+    display: flex;
+    flex-flow: column;
+    gap: 16px 0px;
     justify-content: center;
     align-items: center;
-    font-size: 64px;
     color: black;
+    padding: 32px 0px;
+    margin: auto;
+    @include md{
+        flex-direction: row-reverse;
+    }
+}
+.article__carousel{
+    flex: 8;
+    width: 100%;
+    overflow: hidden;
+}
+.article__carousel__item{
+    width: 100%;
+    height: 100%;
+}
+
+
+.article__info{
+    display: flex;
+    gap: 0 12px;
+}
+
+.article__video{
+    height: 20px;
+    padding: 0px 8px;
+    display: flex;
+    font-size: 14px;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(34, 34, 34, 0.6);
+    border-radius: 12px;
+    color: white;
+    text-decoration: none;
+}
+.article__tag{
+    font-size: 14px;
+    line-height: 20px;
+    color: #B38E5B;
+}
+.article__content{
+    flex: 3;
+}
+
+.article__content__item{
+    max-width: 412px;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+}
+.article__title{
+    text-align: justify;
+    font-size: 28px;
+    line-height: 42px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    max-width: 327px;
+    width: 100%;
+    margin-top: 16px;
+}
+
+.article__btn{
+    margin-top: 48px;
+    border-radius: 46px;
+    padding: 12px 48px;
+    font-size: 18px;
+    line-height: 27px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border: 1px solid #FF9122;
+    color: #FF9122 ;
+    background-color: white;
+    display: block;
+    max-width: 176px;
+    margin: 48px auto 0 auto;
 }
 .open{
     display: flex;
 }
 .close{
     display: none;
+}
+
+.swiper {
+  width: 327px;
+  height: 184px;
+  @include xl{
+    width: 740px;
+    height: 432px;
+  }
+}
+
+.swiper-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #fff;
+}
+
+:deep .swiper-button-next{
+    width: 36px;
+    height: 36px;
+
+}
+:deep .swiper-button-prev{
+    width: 36px;
+    height: 36px;
+
+}
+:deep .swiper-button-next::after{
+    font-size: 0px;
+    width: 36px;
+    height: 36px;
+    background-image: url('../../assets/healthy-test/arrow-swiper.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+:deep .swiper-button-prev::after{
+    font-size: 0px;
+    width: 36px;
+    height: 36px;
+    background-image: url('../../assets/healthy-test/arrow-swiper.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    transform: rotate(180deg);
 }
 </style>

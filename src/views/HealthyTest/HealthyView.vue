@@ -74,7 +74,7 @@
                             <span class="article__tag">#常見問題</span>
                         </div>
                         <div class="article__title">疫情期間，癌症化療病人尿不出來又怕掛急診染疫，怎麼辦？</div>
-                        <a :href="url" class="article__btn">立即閱讀</a>
+                        <a :href="data.url" class="article__btn">立即閱讀</a>
                     </div>
                 </div>
 

@@ -1,7 +1,7 @@
 <template>
   <div class="wrap">
       <div class="ad">
-          <div class="ad-item"></div>
+          <div class="ad-item">ad</div>
       </div>
       <nav class="nav">
           <div class="nav__menu">

@@ -203,6 +203,7 @@ export default {
 .ad-item{
   width: 300px;
   height: 250px;
+  background-color: gray;
   background-image: url("https://picsum.photos/300/250");
   @include md{
       width: 600px;

@@ -109,8 +109,9 @@ export default {
   },
   data() {
       return {
-          data:{
-          },
+          data:[
+            {url:'',description:''},
+          ],
           isMenuToggle: false,
           isPhoneHeaderStatus: 1,//1,2
           isPhone:true,
@@ -161,7 +162,47 @@ export default {
               console.log(response)
               this.data = response.data.sources
           })
-          .catch( (error) => console.log(error))
+          .catch( (error) => {
+            console.log(error)
+            this.data = [
+                {
+                    "id": "cbc-news",
+                    "name": "CBC News",
+                    "description": "CBC News is the division of the Canadian Broadcasting Corporation responsible for the news gathering and production of news programs on the corporation's English-language operations, namely CBC Television, CBC Radio, CBC News Network, and CBC.ca.",
+                    "url": "http://www.cbc.ca/news",
+                    "category": "general",
+                    "language": "en",
+                    "country": "ca"
+                },
+                {
+                    "id": "financial-post",
+                    "name": "Financial Post",
+                    "description": "Find the latest happenings in the Canadian Financial Sector and stay up to date with changing trends in Business Markets. Read trading and investing advice from professionals.",
+                    "url": "http://business.financialpost.com",
+                    "category": "business",
+                    "language": "en",
+                    "country": "ca"
+                },
+                {
+                    "id": "google-news-ca",
+                    "name": "Google News (Canada)",
+                    "description": "Comprehensive, up-to-date Canada news coverage, aggregated from sources all over the world by Google News.",
+                    "url": "https://news.google.com",
+                    "category": "general",
+                    "language": "en",
+                    "country": "ca"
+                },
+                {
+                    "id": "the-globe-and-mail",
+                    "name": "The Globe And Mail",
+                    "description": "The Globe and Mail offers the most authoritative news in Canada, featuring national and international news.",
+                    "url": "https://www.theglobeandmail.com",
+                    "category": "general",
+                    "language": "en",
+                    "country": "ca"
+                }
+            ]
+          })
       },
       handleSlideChange(e){
         this.activeIndex = e.activeIndex

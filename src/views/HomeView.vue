@@ -52,16 +52,17 @@
               'close':isMenuToggle
           }">
               <div class="article__carousel">
-                  <swiper
-                      :effect="'cards'"
-                      :modules="modules"
-                      class="mySwiper"
-                      :navigation="true"
-                  >
-                      <swiper-slide><img class="article__carousel__item" src="https://picsum.photos/339/184" alt="" srcset=""></swiper-slide>
-                      <swiper-slide><img class="article__carousel__item" src="https://picsum.photos/339/184" alt="" srcset=""></swiper-slide>
-                      <swiper-slide><img class="article__carousel__item" src="https://picsum.photos/339/184" alt="" srcset=""></swiper-slide>
-                  </swiper>
+                <swiper
+                    :effect="'cards'"
+                    :modules="modules"
+                    class="mySwiper"
+                    :navigation="true"
+                    @slideChange="(e) => handleSlideChange(e)"
+                >
+                    <swiper-slide><img class="article__carousel__item" src="https://picsum.photos/339/184" alt="" srcset=""></swiper-slide>
+                    <swiper-slide><img class="article__carousel__item" src="https://picsum.photos/339/184" alt="" srcset=""></swiper-slide>
+                    <swiper-slide><img class="article__carousel__item" src="https://picsum.photos/339/184" alt="" srcset=""></swiper-slide>
+                </swiper>
               </div>
               <div class="article__content">
                   <div class="article__content__item">
@@ -73,8 +74,8 @@
                           <span class="article__tag">#常見治療問題</span>
                           <span class="article__tag">#常見問題</span>
                       </div>
-                      <div class="article__title">疫情期間，癌症化療病人尿不出來又怕掛急診染疫，怎麼辦？</div>
-                      <a :href="data.url" class="article__btn">立即閱讀</a>
+                      <div class="article__title">{{ data[activeIndex].description }}</div>
+                      <a :href="data[activeIndex].url" class="article__btn">立即閱讀</a>
                   </div>
               </div>
 
@@ -109,13 +110,12 @@ export default {
   data() {
       return {
           data:{
-              url:'',
-              description:''
           },
           isMenuToggle: false,
           isPhoneHeaderStatus: 1,//1,2
           isPhone:true,
-          isLineToggle:true
+          isLineToggle:true,
+          activeIndex: 0,
       }
   },
   methods:{
@@ -159,10 +159,12 @@ export default {
           axios.get(`https://newsapi.org/v2/top-headlines/sources?apiKey=42bd4348393e4b7a8ab3cc7574c1a2b3&country=ca`)
           .then( (response) => {
               console.log(response)
-              this.data.url = response.data.sources[0].url
-              this.data.description = response.data.sources[0].description
+              this.data = response.data.sources
           })
           .catch( (error) => console.log(error))
+      },
+      handleSlideChange(e){
+        this.activeIndex = e.activeIndex
       }
   },
   created(){
@@ -436,20 +438,24 @@ export default {
   justify-content: center;
   align-items: center;
   color: black;
-  padding: 32px 0px;
+  padding: 32px 24px;
   margin: auto;
-  @include md{
+  overflow: hidden;
+  @include lg{
       flex-direction: row-reverse;
+      justify-content: space-between;
   }
 }
 .article__carousel{
-  flex: 8;
   width: 100%;
-  overflow: hidden;
+  @include lg{
+    flex: 1 1 0%;
+  }
 }
 .article__carousel__item{
   width: 100%;
   height: 100%;
+  border-radius: 12px;
 }
 
 
@@ -476,7 +482,11 @@ export default {
   color: #B38E5B;
 }
 .article__content{
-  flex: 3;
+  width: 100%;
+  @include lg{
+      width: 35%;
+      margin-right: 20px;
+  }
 }
 
 .article__content__item{
@@ -484,9 +494,16 @@ export default {
   width: 100%;
   margin: 0 auto;
   text-align: center;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  @include lg{
+      width: 412px;
+  }
 }
 .article__title{
-  text-align: justify;
+  text-align: left;
   font-size: 28px;
   line-height: 42px;
   font-weight: 700;
@@ -494,6 +511,10 @@ export default {
   max-width: 327px;
   width: 100%;
   margin-top: 16px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
 }
 
 .article__btn{
@@ -511,6 +532,7 @@ export default {
   display: block;
   max-width: 176px;
   margin: 48px auto 0 auto;
+  text-decoration: none;
 }
 .open{
   display: flex;
@@ -520,12 +542,17 @@ export default {
 }
 
 .swiper {
-width: 327px;
-height: 184px;
-@include xl{
-  width: 740px;
-  height: 432px;
-}
+width: 100%;
+max-width: 764px;
+aspect-ratio: 340 / 184;
+padding: 0 20px;
+  @include lg{
+    max-width: 580px;
+  }
+  @include xl{
+    max-width: 764px;
+    padding: 0 30px;
+  }
 }
 
 .swiper-slide {
@@ -552,6 +579,8 @@ color: #fff;
   font-size: 0px;
   width: 36px;
   height: 36px;
+  position: absolute;
+  right: 20px;
   background-image: url('../assets/healthy-test/arrow-swiper.svg');
   background-position: center;
   background-repeat: no-repeat;
@@ -562,6 +591,8 @@ color: #fff;
   font-size: 0px;
   width: 36px;
   height: 36px;
+  position: absolute;
+  left: 20px;
   background-image: url('../assets/healthy-test/arrow-swiper.svg');
   background-position: center;
   background-repeat: no-repeat;

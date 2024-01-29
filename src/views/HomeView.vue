@@ -585,6 +585,9 @@ color: #fff;
   background-position: center;
   background-repeat: no-repeat;
   background-size: contain;
+  @include xl{
+    right: 30px;
+  }
 }
 
 :deep .swiper-button-prev::after{
@@ -598,5 +601,8 @@ color: #fff;
   background-repeat: no-repeat;
   background-size: contain;
   transform: rotate(180deg);
+  @include xl{
+    left: 30px;
+  }
 }
 </style>
